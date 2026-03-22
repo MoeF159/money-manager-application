@@ -18,6 +18,12 @@ public class ProfileService{
 
     public ProfileDTO registerProfile(ProfileDTO profileDTO){
 
+        // Check if email is already registered
+        if (profileRepository.findByEmail(profileDTO.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("Email already registered");
+        }
+
+
         ProfileEntity newProfile = toEntity(profileDTO); // Convert DTO to Entity (you would typically save this entity to the database here)
         newProfile.setActivationToken(UUID.randomUUID().toString());
         newProfile = profileRepository.save(newProfile); // Save the new profile to the database
