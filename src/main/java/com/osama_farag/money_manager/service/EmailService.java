@@ -28,7 +28,7 @@ public class EmailService {
             mailSender.send(message);
 
         } catch (MailException e) {
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException("Failed to send email to: " + to, e);
         }
     }
 }
