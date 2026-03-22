@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 public class ProfileService{
 
     private final ProfileRepository profileRepository;
+    private final EmailService emailService;
 
     public ProfileDTO registerProfile(ProfileDTO profileDTO){
 
@@ -27,6 +28,13 @@ public class ProfileService{
         ProfileEntity newProfile = toEntity(profileDTO); // Convert DTO to Entity (you would typically save this entity to the database here)
         newProfile.setActivationToken(UUID.randomUUID().toString());
         newProfile = profileRepository.save(newProfile); // Save the new profile to the database
+
+        // Send activation link 
+        String activationLink = "http://localhost:8080/api/v1.0/activate?token=" + newProfile.getActivationToken();
+        String subject = "Activate Your Money Manager Account";
+        String body = "Please click the link to activate your account: " + activationLink;
+
+        emailService.sendEmail(newProfile.getEmail(), subject, body);
 
         return toDTO(newProfile);
     }
@@ -53,5 +61,17 @@ public class ProfileService{
                 .createdAt(profileEntity.getCreatedAt())
                 .updatedAt(profileEntity.getUpdatedAt())
                 .build();
+    }
+
+
+    public boolean activateProfile(String activationToken) {
+        return profileRepository.findByActivationToken(activationToken)
+                .map(profile -> {
+                    profile.setIsActive(true);
+                    profile.setActivationToken(null); // Clear the token after activation
+                    profileRepository.save(profile);
+                    return true;
+                })
+                .orElse(false);
     }
 }
