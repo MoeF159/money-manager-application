@@ -18,7 +18,7 @@ public class EmailService {
     private String fromEmail;
 
     public void sendEmail(String to, String subject, String body) {
-        // Implement email sending logic using mailSender
+        // Email sending logic using mailSender
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(fromEmail);
