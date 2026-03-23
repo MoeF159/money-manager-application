@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
    
-    // Security configuration will be implemented here in the future
+    // Security configuration for the application, including CORS and CSRF settings, and endpoint access rules
    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
