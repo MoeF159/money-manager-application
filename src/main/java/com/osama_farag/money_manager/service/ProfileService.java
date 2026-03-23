@@ -92,4 +92,27 @@ public class ProfileService{
         return profileRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("Profile not found with email: " + authentication.getName()));
     }
+
+    public ProfileDTO getPublicProfile(String email){
+        
+        ProfileEntity currentUser = null;
+        
+        if (email == null || email.isEmpty()) {
+            currentUser = getCurrentProfile(); // Get the current user's profile if no email is provided
+        }else{
+            currentUser = profileRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Profile not found with email: " + email));
+        }
+        return ProfileDTO.builder()
+                .id(currentUser.getId())
+                .fullName(currentUser.getFullName())
+                .email(currentUser.getEmail())
+                //.password(currentUser.getPassword())
+                .profileImageUrl(currentUser.getProfileImageUrl())
+                .createdAt(currentUser.getCreatedAt())
+                .updatedAt(currentUser.getUpdatedAt())
+                .build();
+
+    }
+
 }
