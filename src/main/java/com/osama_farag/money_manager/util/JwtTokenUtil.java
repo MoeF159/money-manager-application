@@ -19,26 +19,22 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtTokenUtil {
 
-    // Token validity in seconds (5 hours)
-    private static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
+private static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
+	
+	@Value("${jwt.secret}")
+	private String secret;
 
-    @Value("${jwt.secret}")
-    private String secret;
-
-    // Generate JWT token for a given user
-    public String generateToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
-
-        Key key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
-                .signWith(key, SignatureAlgorithm.HS512)
-                .compact();
-    }
+	public String generateToken(UserDetails userDetails) {
+		Map<String, Object> claims = new HashMap<>();
+		
+		return Jwts.builder()
+			.setClaims(claims)
+			.setSubject(userDetails.getUsername())
+			.setIssuedAt(new Date(System.currentTimeMillis()))
+			.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+			.signWith(SignatureAlgorithm.HS512, secret)
+			.compact();
+	}
 
     // Extract username from JWT token
     public String getUsernameFromToken(String token) {
