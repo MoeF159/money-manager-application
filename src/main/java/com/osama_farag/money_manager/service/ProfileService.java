@@ -2,6 +2,9 @@ package com.osama_farag.money_manager.service;
 
 import java.util.UUID;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -83,5 +86,10 @@ public class ProfileService{
                 .orElse(false);
     }
 
-    
+    public ProfileEntity getCurrentProfile(){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return profileRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("Profile not found with email: " + authentication.getName()));
+    }
 }
