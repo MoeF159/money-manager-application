@@ -16,7 +16,7 @@ public class SecurityConfig {
    
     // Security configuration will be implemented here in the future
    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
             .cors(Customizer.withDefaults())
             .csrf(AbstractHttpConfigurer::disable)
