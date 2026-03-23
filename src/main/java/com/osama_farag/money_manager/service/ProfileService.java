@@ -103,15 +103,7 @@ public class ProfileService{
             currentUser = profileRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Profile not found with email: " + email));
         }
-        return ProfileDTO.builder()
-                .id(currentUser.getId())
-                .fullName(currentUser.getFullName())
-                .email(currentUser.getEmail())
-                //.password(currentUser.getPassword())
-                .profileImageUrl(currentUser.getProfileImageUrl())
-                .createdAt(currentUser.getCreatedAt())
-                .updatedAt(currentUser.getUpdatedAt())
-                .build();
+        return toDTO(currentUser);
 
     }
 
