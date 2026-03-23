@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AppUserDetailsService implements UserDetailsService {
 
-    private final ProfileService profileService;
     private final ProfileRepository profileRepository;
 
     @Override
