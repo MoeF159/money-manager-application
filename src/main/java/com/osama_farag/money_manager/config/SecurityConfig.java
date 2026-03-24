@@ -37,7 +37,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
                 // Allow unauthenticated access to these endpoints
-                .requestMatchers("/status", "/health", "/register", "/activate").permitAll()
+                .requestMatchers("/status", "/health", "/register", "/activate", "/login").permitAll()
                 // All other endpoints require authentication
                 .anyRequest().authenticated()
             )
