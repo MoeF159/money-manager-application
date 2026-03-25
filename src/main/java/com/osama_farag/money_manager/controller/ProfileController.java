@@ -42,7 +42,7 @@ public class ProfileController {
     }
 
     @PostMapping("/login")
-public ResponseEntity<Map<String, Object>> login(@RequestBody AuthDTO authDTO) {
+    public ResponseEntity<Map<String, Object>> login(@RequestBody AuthDTO authDTO) {
 
     // Check activation first (this is fine)
     if (!profileService.isAccountActive(authDTO.getEmail())) {
@@ -71,4 +71,9 @@ public ResponseEntity<Map<String, Object>> login(@RequestBody AuthDTO authDTO) {
     }
 }
 
+
+    @GetMapping("/test")
+    public String test() {
+        return "Test Successful";
+    }
 }
