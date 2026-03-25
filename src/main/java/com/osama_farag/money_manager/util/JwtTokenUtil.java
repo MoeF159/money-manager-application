@@ -19,44 +19,49 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtTokenUtil {
 
-private static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
-	
-	@Value("${jwt.secret}")
-	private String secret;
+    // Token validity: 5 hours
+    private static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60; // in seconds
 
-	public String generateToken(UserDetails userDetails) {
-		Map<String, Object> claims = new HashMap<>();
-		
-		return Jwts.builder()
-			.setClaims(claims)
-			.setSubject(userDetails.getUsername())
-			.setIssuedAt(new Date(System.currentTimeMillis()))
-			.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
-			.signWith(SignatureAlgorithm.HS512, secret)
-			.compact();
-	}
+    @Value("${jwt.secret}")
+    private String secret;
+
+    // Generate the signing key from secret
+    private Key getSigningKey() {
+        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    }
+
+    // Generate token for a user
+    public String generateToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS512) // ✅ Use Key
+                .compact();
+    }
 
     // Extract username from JWT token
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
-    // Extract expiration date from JWT token
+    // Extract expiration date from token
     private Date getExpirationDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getExpiration);
     }
 
-    // Extract any claim from token using a resolver function
+    // Extract any claim using a resolver function
     private <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
-        Claims claims = getAllClaimsFromToken(token);
+        final Claims claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
     }
 
-    // Parse token and get all claims
+    // Parse token and retrieve all claims
     private Claims getAllClaimsFromToken(String token) {
-        Key key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         return Jwts.parserBuilder()
-                .setSigningKey(key)
+                .setSigningKey(getSigningKey()) // ✅ Use same Key for parsing
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
