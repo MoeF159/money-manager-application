@@ -3,6 +3,7 @@ package com.osama_farag.money_manager.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.osama_farag.money_manager.dto.CategoryDTO;
 import com.osama_farag.money_manager.entity.CategoryEntity;
@@ -47,6 +48,17 @@ public class CategoryService {
         ProfileEntity profile = profileService.getCurrentProfile();
         List<CategoryEntity> entities = categoryRepository.findByTypeAndProfileId(type, profile.getId());
         return entities.stream().map(this::toDTO).toList();
+    }
+
+    //update category
+    public CategoryDTO updateCategory(Long categoryId, CategoryDTO dto){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        CategoryEntity existingCategory = categoryRepository.findByIdAndProfileId(categoryId, profile.getId())
+            .orElseThrow(() -> new RuntimeException("Category not found or not accessible"));
+        existingCategory.setName(dto.getName());
+        existingCategory.setIcon(dto.getIcon());
+        existingCategory = categoryRepository.save(existingCategory);
+        return toDTO(existingCategory);
     }
 
   
