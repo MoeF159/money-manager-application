@@ -1,8 +1,6 @@
 package com.osama_farag.money_manager.service;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.osama_farag.money_manager.dto.CategoryDTO;
 import com.osama_farag.money_manager.entity.CategoryEntity;
@@ -26,7 +24,7 @@ public class CategoryService {
         
         //check if category with the same name already exists for this profile
         if(categoryRepository.existsByNameAndProfileId(categoryDTO.getName(), profile.getId())){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Category with the same name already exists");
+            throw new RuntimeException( "Category with the same name already exists");
         }
         //convert DTO to entity and save
         CategoryEntity newCategory = toEntity(categoryDTO, profile);
