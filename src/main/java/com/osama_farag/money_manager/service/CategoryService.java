@@ -1,5 +1,7 @@
 package com.osama_farag.money_manager.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.osama_farag.money_manager.dto.CategoryDTO;
@@ -31,6 +33,13 @@ public class CategoryService {
         newCategory = categoryRepository.save(newCategory);
         return toDTO(newCategory);
 
+    }
+
+    //get category by current user
+    public List<CategoryDTO> getCategoriesForCurrentUser(){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        List<CategoryEntity> categories = categoryRepository.findByProfileId(profile.getId());
+        return categories.stream().map(this::toDTO).toList();
     }
 
   
