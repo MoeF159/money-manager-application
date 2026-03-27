@@ -3,7 +3,6 @@ package com.osama_farag.money_manager.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.osama_farag.money_manager.dto.CategoryDTO;
 import com.osama_farag.money_manager.entity.CategoryEntity;
