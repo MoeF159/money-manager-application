@@ -2,7 +2,9 @@ package com.osama_farag.money_manager.service;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.osama_farag.money_manager.dto.CategoryDTO;
 import com.osama_farag.money_manager.entity.CategoryEntity;
@@ -26,7 +28,7 @@ public class CategoryService {
         
         //check if category with the same name already exists for this profile
         if(categoryRepository.existsByNameAndProfileId(categoryDTO.getName(), profile.getId())){
-            throw new RuntimeException( "Category with the same name already exists");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Category with the same name already exists");
         }
         //convert DTO to entity and save
         CategoryEntity newCategory = toEntity(categoryDTO, profile);
@@ -53,7 +55,7 @@ public class CategoryService {
     public CategoryDTO updateCategory(Long categoryId, CategoryDTO dto){
         ProfileEntity profile = profileService.getCurrentProfile();
         CategoryEntity existingCategory = categoryRepository.findByIdAndProfileId(categoryId, profile.getId())
-            .orElseThrow(() -> new RuntimeException("Category not found or not accessible"));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found or not accessible"));
         existingCategory.setName(dto.getName());
         existingCategory.setIcon(dto.getIcon());
         existingCategory = categoryRepository.save(existingCategory);
