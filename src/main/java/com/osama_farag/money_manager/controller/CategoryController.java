@@ -25,7 +25,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping
-    public ResponseEntity<CategoryDTO> saveCategory(@RequestBody CategoryDTO categoryDTO) {
+    public ResponseEntity<CategoryDTO> saveCategory(`@Valid` `@RequestBody` CategoryDTO categoryDTO) {
         CategoryDTO savedCategory = categoryService.saveCategory(categoryDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedCategory);
     }
