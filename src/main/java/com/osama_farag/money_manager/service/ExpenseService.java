@@ -1,5 +1,7 @@
 package com.osama_farag.money_manager.service;
 
+import java.time.LocalDate;
+
 import org.springframework.stereotype.Service;
 
 import com.osama_farag.money_manager.dto.ExpenseDTO;
@@ -35,7 +37,7 @@ public class ExpenseService {
             .name(dto.getName())
             .icon(dto.getIcon())
             .amount(dto.getAmount())
-            .date(dto.getDate())
+            .date(dto.getDate() != null ? dto.getDate() : LocalDate.now())
             .profile(profile)
             .category(category)
             .build();
@@ -50,7 +52,7 @@ public class ExpenseService {
             .categoryId(entity.getCategory() != null ? entity.getCategory().getId() : null)
             .categoryName(entity.getCategory() != null ? entity.getCategory().getName(): "N/A")
             .amount(entity.getAmount())
-            .date(entity.getDate())
+            .date(entity.getDate() != null ? entity.getDate() : java.time.LocalDate.now())
             .createdAt(entity.getCreatedAt())
             .updatedAt(entity.getUpdatedAt())
             .build();
