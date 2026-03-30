@@ -6,6 +6,7 @@ import com.osama_farag.money_manager.dto.ExpenseDTO;
 import com.osama_farag.money_manager.entity.CategoryEntity;
 import com.osama_farag.money_manager.entity.ExpenseEntity;
 import com.osama_farag.money_manager.entity.ProfileEntity;
+import com.osama_farag.money_manager.repository.CategoryRepository;
 import com.osama_farag.money_manager.repository.ExpenseRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -14,10 +15,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ExpenseService {
 
-    private final CategoryService categoryService;
+    private final CategoryRepository categoryRepository;
     private final ExpenseRepository expenseRepository;
+    private final ProfileService profileService;
 
-
+    public ExpenseDTO addExpense(ExpenseDTO dto){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        CategoryEntity category = categoryRepository.findById(dto.getCategoryId())
+            .orElseThrow(() -> new RuntimeException("Category not found with id: " + dto.getCategoryId()));
+        ExpenseEntity expense = toEntity(dto, profile, category);
+        ExpenseEntity newExpense = expenseRepository.save(expense);
+        return toDTO(newExpense);
+    }
 
 
     //helper methods
