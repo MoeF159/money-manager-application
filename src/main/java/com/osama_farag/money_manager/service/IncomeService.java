@@ -6,6 +6,7 @@ import com.osama_farag.money_manager.dto.IncomeDTO;
 import com.osama_farag.money_manager.entity.CategoryEntity;
 import com.osama_farag.money_manager.entity.IncomeEntity;
 import com.osama_farag.money_manager.entity.ProfileEntity;
+import com.osama_farag.money_manager.repository.CategoryRepository;
 import com.osama_farag.money_manager.repository.IncomeRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -15,9 +16,18 @@ import lombok.RequiredArgsConstructor;
 public class IncomeService {
 
 
-    private final CategoryService categoryService;
+    private final CategoryRepository categoryRepository;
     private final IncomeRepository incomeRepository;
+    private final ProfileService profileService;
 
+    public IncomeDTO addIncome(IncomeDTO dto){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        CategoryEntity category = categoryRepository.findById(dto.getCategoryId())
+            .orElseThrow(() -> new RuntimeException("Category not found with id: " + dto.getCategoryId()));
+        IncomeEntity income = toEntity(dto, profile, category);
+        IncomeEntity newIncome = incomeRepository.save(income);
+        return toDTO(newIncome);
+    }
 
 
 
