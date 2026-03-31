@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RecentTransationDTO {
+public class RecentTransactionDTO  {
 
     private Long id;
     private Long profileId;

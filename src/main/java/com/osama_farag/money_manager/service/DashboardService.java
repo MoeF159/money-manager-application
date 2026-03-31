@@ -1,5 +1,6 @@
 package com.osama_farag.money_manager.service;
 
+import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.osama_farag.money_manager.dto.ExpenseDTO;
 import com.osama_farag.money_manager.dto.IncomeDTO;
-import com.osama_farag.money_manager.dto.RecentTransationDTO;
+import com.osama_farag.money_manager.dto.RecentTransactionDTO;
 import com.osama_farag.money_manager.entity.ProfileEntity;
 
 import lombok.RequiredArgsConstructor;
@@ -25,12 +26,14 @@ public class DashboardService {
 
     public Map<String, Object> getDashboardData(){
         ProfileEntity profile = profileService.getCurrentProfile();
+        BigDecimal totalIncome = incomeService.getTotalIncomeForCurrentUser();
+        BigDecimal totalExpense = expenseService.getTotalExpenseForCurrentUser();
         Map<String, Object> returnValue = new LinkedHashMap<>();
         List<IncomeDTO> latestIncomes = incomeService.getLatest5IncomesForCurrentUser();
         List<ExpenseDTO> latestExpenses = expenseService.getLatest5ExpensesForCurrentUser();
-        List<RecentTransationDTO> recentTransactions = concat(
+        List<RecentTransactionDTO> recentTransactions = concat(
             latestIncomes.stream().map((IncomeDTO income) -> 
-                RecentTransationDTO.builder()
+                RecentTransactionDTO.builder()
                     .id(income.getId())
                     .profileId(profile.getId())
                     .icon(income.getIcon())
@@ -42,7 +45,7 @@ public class DashboardService {
                     .type("income")
                     .build()), 
             latestExpenses.stream().map((ExpenseDTO expense) -> 
-                RecentTransationDTO.builder()
+                RecentTransactionDTO.builder()
                     .id(expense.getId())
                     .profileId(profile.getId())
                     .icon(expense.getIcon())
@@ -62,16 +65,15 @@ public class DashboardService {
                     }).collect(Collectors.toList());
         returnValue.put(
             "totalBalance", 
-            incomeService.getTotalIncomeForCurrentUser()
-            .subtract(expenseService.getTotalExpenseForCurrentUser())
+            totalIncome.subtract(totalExpense)
         );
         returnValue.put(
             "totalIncome", 
-            incomeService.getTotalIncomeForCurrentUser()
+            totalIncome
         );
         returnValue.put(
             "totalExpense", 
-            expenseService.getTotalExpenseForCurrentUser()
+            totalExpense
         );
         returnValue.put(
             "recent5Expenses",
