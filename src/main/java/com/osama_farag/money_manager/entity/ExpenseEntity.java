@@ -51,7 +51,6 @@ public class ExpenseEntity {
     @JoinColumn(name = "profile_id", nullable = false)
     private ProfileEntity profile;
 
-    `@PrePersist`
     public void prePersist(){
         if(this.date == null){
             this.date = LocalDate.now();
