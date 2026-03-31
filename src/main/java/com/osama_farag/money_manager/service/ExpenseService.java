@@ -70,7 +70,7 @@ public class ExpenseService {
     }
 
     //filter expenses
-    public List<ExpenseDTO> filterExpenses(LocalDate starDate, LocalDate endDate, String keyword, Sort sort){
+    public List<ExpenseDTO> filterExpenses(LocalDate startDate, LocalDate endDate, String keyword, Sort sort){
         ProfileEntity profile = profileService.getCurrentProfile();
         List<ExpenseEntity> list = expenseRepository.findByProfileIdAndDateBetweenAndNameContainingIgnoreCase(profile.getId(), starDate, endDate, keyword, sort);
         return list.stream().map(this::toDTO).toList();
