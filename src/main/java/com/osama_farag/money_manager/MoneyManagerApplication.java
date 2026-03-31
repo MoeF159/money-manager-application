@@ -11,3 +11,5 @@ public class MoneyManagerApplication {
 	}
 
 }
+// Press Ctrl+Shift+Y to open the Spring Boot dashboard and see the application running. 
+// You can also run this class directly from your IDE to start the application.

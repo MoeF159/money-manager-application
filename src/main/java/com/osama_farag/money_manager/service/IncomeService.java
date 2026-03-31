@@ -1,5 +1,6 @@
 package com.osama_farag.money_manager.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -51,6 +52,20 @@ public class IncomeService {
             throw new RuntimeException("Unauthorized to delete this income");
         }
         incomeRepository.delete(entity);
+    }
+
+    //Get latest 5 incomes for current user
+    public List<IncomeDTO> getLatest5IncomesForCurrentUser(){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        List<IncomeEntity> incomes = incomeRepository.findTop5ByProfileIdOrderByDateDesc(profile.getId());
+        return incomes.stream().map(this::toDTO).toList();
+    }
+
+    //Get total incomes for current user
+    public BigDecimal getTotalIncomeForCurrentUser(){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        BigDecimal totalIncome = incomeRepository.findTotalIncomeByProfileId(profile.getId());
+        return totalIncome != null ? totalIncome : BigDecimal.ZERO;
     }
 
 
