@@ -25,7 +25,7 @@ public class FilterController{
     private final ExpenseService expenseService;
     private final IncomeService  incomeService;
 
-    @PostMapping("/filter")
+    @PostMapping()
     public ResponseEntity<?> filterTransactions(@RequestBody FilterDTO filter){
         //Prepairing the data or validation
         LocalDate startDate = filter.getStartDate() != null ? filter.getStartDate() : LocalDate.MIN;
