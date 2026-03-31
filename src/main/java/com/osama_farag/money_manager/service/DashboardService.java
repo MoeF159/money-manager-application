@@ -56,11 +56,19 @@ public class DashboardService {
                     .updatedAt(expense.getUpdatedAt())
                     .type("expense")
                     .build()
-                    )).sorted((a, b) -> {
-                        int comp = b.getDate().compareTo(a.getDate());
-                        if(comp == 0 && a.getCreatedAt() != null && b.getCreatedAt() != null){
-                            return b.getCreatedAt().compareTo(a.getCreatedAt());
-                        }
+                    ))
+                    .sorted(
+                        Comparator
+                            .comparing(
+                                RecentTransactionDTO::getDate,
+                                Comparator.nullsLast(Comparator.reverseOrder())
+                            )
+                            .thenComparing(
+                                RecentTransactionDTO::getCreatedAt,
+                                Comparator.nullsLast(Comparator.reverseOrder())
+                            )
+                    )
+                    .collect(Collectors.toList());
                         return comp;
                     }).collect(Collectors.toList());
         returnValue.put(
