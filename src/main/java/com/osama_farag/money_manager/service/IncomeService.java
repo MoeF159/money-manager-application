@@ -1,6 +1,7 @@
 package com.osama_farag.money_manager.service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,17 @@ public class IncomeService {
         IncomeEntity newIncome = incomeRepository.save(income);
         return toDTO(newIncome);
     }
+
+    //get all incomes for current month based on the start and end date of the month
+    public List<IncomeDTO> getCurrentMonthIncomesForCurrentUser(){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        LocalDate now = LocalDate.now();
+        LocalDate startDate = now.withDayOfMonth(1);
+        LocalDate endDate = now.withDayOfMonth(now.lengthOfMonth());
+        List<IncomeEntity> incomes = incomeRepository.findByProfileIdAndDateBetween(profile.getId(), startDate, endDate);
+        return incomes.stream().map(this::toDTO).toList();
+    }
+
 
 
 

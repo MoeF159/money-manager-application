@@ -1,6 +1,7 @@
 package com.osama_farag.money_manager.service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,16 @@ public class ExpenseService {
         ExpenseEntity expense = toEntity(dto, profile, category);
         ExpenseEntity newExpense = expenseRepository.save(expense);
         return toDTO(newExpense);
+    }
+
+    //get all expenses for current month based on the start and end date of the month
+    public List<ExpenseDTO> getCurrentMonthExpensesForCurrentUser(){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        LocalDate now = LocalDate.now();
+        LocalDate startDate = now.withDayOfMonth(1);
+        LocalDate endDate = now.withDayOfMonth(now.lengthOfMonth());
+        List<ExpenseEntity> expenses = expenseRepository.findByProfileIdAndDateBetween(profile.getId(), startDate, endDate);
+        return expenses.stream().map(this::toDTO).toList();
     }
 
 
