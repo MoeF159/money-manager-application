@@ -2,6 +2,7 @@ package com.osama_farag.money_manager.service;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -51,7 +52,7 @@ public class NotificationService{
             if(!todaysExpenses.isEmpty()){
                 StringBuilder table = new StringBuilder();
                 table.append("<table style='border-collapse:collapse; width:100%;'>");
-                table.append("<tr style='background-color:#f2f2f2;'><th style='border:1px solid #ddd; padding:8px;'>S.No</th><th style= border:1px solid #fff; padding:8px;'>Name</th><th style='border:1px solid #ddd; padding:8px;'>Amount</th><th style='border:1px solid #ddd; padding:8px;'>Category</th><th style='border:1px solid #ddd; padding:8px;'>Date</th>");
+                table.append("<tr style='background-color:#f2f2f2;'><th style='border:1px solid #ddd; padding:8px;'>S.No</th><th style= border:1px solid #fff; padding:8px;'>Name</th><th style='border:1px solid #ddd; padding:8px;'>Amount</th><th style='border:1px solid #ddd; padding:8px;'>Category</th></tr>");
                 int i =1;
                 for(ExpenseDTO expense: todaysExpenses){
                     table.append("<tr>");
@@ -63,7 +64,11 @@ public class NotificationService{
                 }
                 table.append("</table>");
                 String body = "Hi "+profile.getFullName()+ ",<br/><br/> Here is a summary of your expenses for today:<br/><br/>"+table+"<br/><br/>Best Regards,<br/>Money Manager Team";
-                emailService.sendEmail(profile.getEmail(), "Your Daily Expense Summary", body);
+                emailService.sendEmail(
+                    profile.getEmail(), 
+                    "Your Daily Expense Summary - " + LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM d, yyyy")), 
+                    body
+                    );
             }   
         }
         log.info("Job Completed: sendDailyExpenseSummary()");
