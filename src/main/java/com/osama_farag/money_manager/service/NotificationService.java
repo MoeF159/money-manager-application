@@ -56,10 +56,10 @@ public class NotificationService{
                 int i =1;
                 for(ExpenseDTO expense: todaysExpenses){
                     table.append("<tr>");
-                    table.append("<td style='bordewr:1px solid #ddd; padding:8px;'>").append(i++).append("</td>");
-                    table.append("<td style='bordewr:1px solid #ddd; padding:8px;'>").append(expense.getName()).append("</td>");
-                    table.append("<td style='bordewr:1px solid #ddd; padding:8px;'>").append(expense.getAmount()).append("</td>");
-                    table.append("<td style='bordewr:1px solid #ddd; padding:8px;'>").append(expense.getCategoryId() != null ? expense.getCategoryName() : "N/A").append("</td>");
+                    table.append("<td style='border:1px solid #ddd; padding:8px; text-align:center;'>").append(i++).append("</td>");
+                    table.append("<td style='border:1px solid #ddd; padding:8px; text-align:center;'>").append(expense.getName()).append("</td>");
+                    table.append("<td style='border:1px solid #ddd; padding:8px; text-align:center;'>").append(expense.getAmount()).append("</td>");
+                    table.append("<td style='border:1px solid #ddd; padding:8px; text-align:center;'>").append(expense.getCategoryId() != null ? expense.getCategoryName() : "N/A").append("</td>");
                     table.append("</tr>");
                 }
                 table.append("</table>");
