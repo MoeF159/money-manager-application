@@ -29,22 +29,25 @@ public class NotificationService{
     @Value("${money.manager.frontend.url}")
     private String frontendURL;
 
-    //@Scheduled(cron = "0 * * * * *", zone= "EST") //test service every minute
-    @Scheduled(cron = "0 0 22 * * *", zone= "EST") //Sceduled: 10PM
+    //@Scheduled(cron = "0 * * * * *", zone= "America/New_York") //test service every minute
+    @Scheduled(cron = "0 0 22 * * *", zone= "America/New_York") //Sceduled: 10PM
     public void sendDailyIncomeExpenseReminder(){
         log.info("Job Started: sendDailyIncomeExpenseReminder()");
         List<ProfileEntity> profiles = profileRepository.findAll();
         for(ProfileEntity profile : profiles){
-            String body = "Hi " + profile.getFullName() + ",<br><br>"
-                    + "This is a friendly reminder to add your income and expenses for today in Money Manager "
-                    + "<a href="+frontendURL+" style='display:inline-block; padding:10px 20px; background-color:#4CAF50; color:#fff; text-decoration:none; border-radius:5px; font-weight:bold;'> <br>Go to Money Manager</a>"
-                    + "<br><br> Best Regards, <br>Money Manager Team";
-            emailService.sendEmail(profile.getEmail(), "Daily reminder: Add your income and expenses!", body);
-        }
+            try {
+                String body = "Hi " + profile.getFullName() + ",<br><br>"
+                        + "This is a friendly reminder to add your income and expenses for today in Money Manager "
+                        + "<a href="+frontendURL+" style='display:inline-block; padding:10px 20px; background-color:`#4CAF50`; color:`#ddd`; text-decoration:none; border-radius:5px; font-weight:bold;'> <br>Go to Money Manager</a>"
+                        + "<br><br> Best Regards, <br>Money Manager Team";
+                emailService.sendEmail(profile.getEmail(), "Daily reminder: Add your income and expenses!", body);
+            } catch (Exception e) {
+                log.error("Failed to send reminder email to profile {}: {}", profile.getId(), e.getMessage());
+            }        }
         log.info("Job Completed: sendDailyIncomeExpenseReminder()");
     }
-    //@Scheduled(cron = "0 * * * * *", zone= "EST") //test service every minute
-    @Scheduled(cron = "0 0 23 * * *", zone= "EST") //Sceduled: 11PM
+    //@Scheduled(cron = "0 * * * * *", zone= "America/New_York") //test service every minute
+    @Scheduled(cron = "0 0 23 * * *", zone= "America/New_York") //Sceduled: 11PM
     public void sendDailyExpenseSummary(){
         log.info("Job Started: sendDailyExpenseSummary()");
         List<ProfileEntity> profiles = profileRepository.findAll();
@@ -53,7 +56,7 @@ public class NotificationService{
             if(!todaysExpenses.isEmpty()){
                 StringBuilder table = new StringBuilder();
                 table.append("<table style='border-collapse:collapse; width:100%;'>");
-                table.append("<tr style='background-color:#f2f2f2;'><th style='border:1px solid #ddd; padding:8px;'>S.No</th><th style= border:1px solid #fff; padding:8px;'>Name</th><th style='border:1px solid #ddd; padding:8px;'>Amount</th><th style='border:1px solid #ddd; padding:8px;'>Category</th></tr>");
+                table.append("<tr style='background-color:#f2f2f2;'><th style='border:1px solid #ddd; padding:8px;'>S.No</th><th style= border:1px solid #ddd; padding:8px;'>Name</th><th style='border:1px solid #ddd; padding:8px;'>Amount</th><th style='border:1px solid #ddd; padding:8px;'>Category</th></tr>");
                 int i =1;
                 for(ExpenseDTO expense: todaysExpenses){
                     table.append("<tr>");
