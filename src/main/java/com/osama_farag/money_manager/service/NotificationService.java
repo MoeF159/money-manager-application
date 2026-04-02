@@ -39,9 +39,14 @@ public class NotificationService{
         for(ProfileEntity profile : profiles){
             try {
                 String body = "Hi " + HtmlUtils.htmlEscape(profile.getFullName()) + ",<br><br>"
-                        + "This is a friendly reminder to add your income and expenses for today in Money Manager "
-                        + "<a href="+frontendURL+" style='display:inline-block; padding:10px 20px; background-color:`#4CAF50`; color:`#ddd`; text-decoration:none; border-radius:5px; font-weight:bold;'> <br>Go to Money Manager</a>"
-                        + "<br><br> Best Regards, <br>Money Manager Team";
+                    + "This is a friendly reminder to add your income and expenses for today in Money Manager."
+                    + "<div style='margin-top:10px; text-align:center;'>"
+                    + "<a href='" + frontendURL + "' "
+                    + "style='display:inline-block; padding:8px 16px; font-size:14px; "
+                    + "background-color:#4CAF50; color:#fff; text-decoration:none; border-radius:5px; font-weight:bold;'>"
+                    + "Go to Money Manager</a>"
+                    + "</div>"
+                    + "<br><br>Best Regards,<br>Money Manager Team";
                 emailService.sendEmail(profile.getEmail(), "Daily reminder: Add your income and expenses!", body);
             } catch (Exception e) {
                 log.error("Failed to send reminder email to profile {}: {}", profile.getId(), e.getMessage());
