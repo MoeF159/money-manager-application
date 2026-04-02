@@ -38,4 +38,23 @@ public interface ExpenseRepository extends JpaRepository<ExpenseEntity, Long>{
         LocalDate startDate, 
         LocalDate endDate
     );
+
+    /**
+    * Retrieves expenses for a specific profile on a given date.
+    * <p>
+    * Note: This method is intended for internal use by scheduled jobs (e.g., NotificationService)
+    * and does not perform authorization checks. Do not expose via REST endpoints without
+    * adding proper access control.
+    */
+    @Query("""
+    SELECT e 
+    FROM ExpenseEntity e 
+    JOIN FETCH e.category 
+    WHERE e.profile.id = :profileId 
+    AND e.date = :date
+    """)
+    List<ExpenseEntity>findByProfileIdAndDate(
+        Long profileId, 
+        LocalDate date
+    );
 }
