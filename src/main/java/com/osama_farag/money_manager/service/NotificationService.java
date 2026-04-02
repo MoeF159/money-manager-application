@@ -25,6 +25,8 @@ public class NotificationService{
     private final ProfileRepository profileRepository;
     private final EmailService emailService;
     private final ExpenseService expenseService;
+    private static final ZoneId TIMEZONE = ZoneId.of("America/New_York");
+
 
     @Value("${money.manager.frontend.url}")
     private String frontendURL;
@@ -36,7 +38,7 @@ public class NotificationService{
         List<ProfileEntity> profiles = profileRepository.findAll();
         for(ProfileEntity profile : profiles){
             try {
-                String body = "Hi " + profile.getFullName() + ",<br><br>"
+                String body = "Hi " + HtmlUtils.htmlEscape(profile.getFullName()) + ",<br><br>"
                         + "This is a friendly reminder to add your income and expenses for today in Money Manager "
                         + "<a href="+frontendURL+" style='display:inline-block; padding:10px 20px; background-color:`#4CAF50`; color:`#ddd`; text-decoration:none; border-radius:5px; font-weight:bold;'> <br>Go to Money Manager</a>"
                         + "<br><br> Best Regards, <br>Money Manager Team";
@@ -52,8 +54,9 @@ public class NotificationService{
         log.info("Job Started: sendDailyExpenseSummary()");
         List<ProfileEntity> profiles = profileRepository.findAll();
         for(ProfileEntity profile : profiles){
-            List<ExpenseDTO> todaysExpenses = expenseService.getExpensesForUserOnDate(profile.getId(), LocalDate.now(ZoneId.of("America/New_York")));
-            if(!todaysExpenses.isEmpty()){
+            try {
+                List<ExpenseDTO> todaysExpenses = expenseService.getExpensesForUserOnDate(profile.getId(), LocalDate.now(TIMEZONE));
+                if(!todaysExpenses.isEmpty()){
                 StringBuilder table = new StringBuilder();
                 table.append("<table style='border-collapse:collapse; width:100%;'>");
                 table.append("<tr style='background-color:#f2f2f2;'><th style='border:1px solid #ddd; padding:8px;'>S.No</th><th style= border:1px solid #ddd; padding:8px;'>Name</th><th style='border:1px solid #ddd; padding:8px;'>Amount</th><th style='border:1px solid #ddd; padding:8px;'>Category</th></tr>");
@@ -70,10 +73,13 @@ public class NotificationService{
                 String body = "Hi "+profile.getFullName()+ ",<br/><br/> Here is a summary of your expenses for today:<br/><br/>"+table+"<br/><br/>Best Regards,<br/>Money Manager Team";
                 emailService.sendEmail(
                     profile.getEmail(), 
-                    "Your Daily Expense Summary - " + LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM d, yyyy")), 
+                    "Your Daily Expense Summary - " + LocalDate.now(TIMEZONE).format(DateTimeFormatter.ofPattern("MMMM d, yyyy")), 
                     body
                     );
-            }   
+                }   
+            } catch (Exception e) {
+                log.error("Failed to send expense summary email to profile {}: {}", profile.getId(), e.getMessage());
+            }
         }
         log.info("Job Completed: sendDailyExpenseSummary()");
     }
