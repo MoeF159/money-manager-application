@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.HtmlUtils;
 
 import com.osama_farag.money_manager.dto.ExpenseDTO;
 import com.osama_farag.money_manager.entity.ProfileEntity;
@@ -57,9 +58,9 @@ public class NotificationService{
                 for(ExpenseDTO expense: todaysExpenses){
                     table.append("<tr>");
                     table.append("<td style='border:1px solid #ddd; padding:8px; text-align:center;'>").append(i++).append("</td>");
-                    table.append("<td style='border:1px solid #ddd; padding:8px; text-align:center;'>").append(expense.getName()).append("</td>");
-                    table.append("<td style='border:1px solid #ddd; padding:8px; text-align:center;'>").append(expense.getAmount()).append("</td>");
-                    table.append("<td style='border:1px solid #ddd; padding:8px; text-align:center;'>").append(expense.getCategoryId() != null ? expense.getCategoryName() : "N/A").append("</td>");
+                    table.append("<td style='border:1px solid #ddd; padding:8px; text-align:center;'>").append(HtmlUtils.htmlEscape(expense.getName())).append("</td>");
+                    table.append("<td style='border:1px solid #ddd; padding:8px; text-align:center;'>").append(String.format("%.2f",expense.getAmount())).append("</td>");
+                    table.append("<td style='border:1px solid #ddd; padding:8px; text-align:center;'>").append(HtmlUtils.htmlEscape(expense.getCategoryId() != null ? expense.getCategoryName() : "N/A")).append("</td>");
                     table.append("</tr>");
                 }
                 table.append("</table>");
