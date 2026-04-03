@@ -3,7 +3,10 @@ FROM eclipse-temurin:21-jdk AS build
 WORKDIR /app
 COPY . .
 
+# Fix permission for mvnw
 RUN chmod +x mvnw
+
+# Build the jar
 RUN ./mvnw clean package -DskipTests
 
 # Stage 2: Run the JAR
