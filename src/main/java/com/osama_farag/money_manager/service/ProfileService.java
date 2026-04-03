@@ -3,6 +3,7 @@ package com.osama_farag.money_manager.service;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,6 +32,9 @@ public class ProfileService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenUtil jwtTokenUtil;
 
+    @Value("${app.activation.url}")
+    private String activationURL;
+
     /** Register a new profile and send activation email */
     public ProfileDTO registerProfile(ProfileDTO profileDTO) {
         if (profileRepository.findByEmail(profileDTO.getEmail()).isPresent()) {
@@ -42,7 +46,7 @@ public class ProfileService {
         newProfile = profileRepository.save(newProfile);
 
         // Send activation link
-        String activationLink = "http://localhost:8080/api/v1.0/activate?token=" + newProfile.getActivationToken();
+        String activationLink = activationURL+"/api/v1.0/activate?token=" + newProfile.getActivationToken();
         String subject = "Activate Your Money Manager Account";
         String body = "Please click the link to activate your account: " + activationLink;
         emailService.sendEmail(newProfile.getEmail(), subject, body);
