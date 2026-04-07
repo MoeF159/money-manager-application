@@ -36,9 +36,6 @@ public class SecurityConfig {
     @Value("${MONEY_MANAGER_FRONTEND_URL}")
     private String frontendUrl;
 
-    @Value("${MONEY_MANAGER_BACKEND_URL}")
-    private String backendUrl;
-   
     // Security configuration for the application, including CORS and CSRF settings, and endpoint access rules
    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -68,7 +65,7 @@ public class SecurityConfig {
     public CorsConfigurationSource configurationSource() {
         // CORS configuration will be implemented here in the future
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of(frontendUrl, backendUrl));
+        configuration.setAllowedOriginPatterns(List.of(frontendUrl));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization","Content-Type", "Accept"));
         configuration.setAllowCredentials(true);
