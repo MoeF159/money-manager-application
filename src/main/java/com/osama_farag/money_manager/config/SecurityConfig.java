@@ -2,6 +2,7 @@ package com.osama_farag.money_manager.config;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,6 +32,12 @@ public class SecurityConfig {
 
     private final AppUserDetailsService appUserDetailsService;
     private final JwtRequestFilter jwtRequestFilter;
+
+    @Value("${MONEY_MANAGER_FRONTEND_URL}")
+    private String frontendUrl;
+
+    @Value("${MONEY_MANAGER_BACKEND_URL}")
+    private String backendUrl;
    
     // Security configuration for the application, including CORS and CSRF settings, and endpoint access rules
    @Bean
@@ -61,7 +68,7 @@ public class SecurityConfig {
     public CorsConfigurationSource configurationSource() {
         // CORS configuration will be implemented here in the future
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("http://localhost:5173"));
+        configuration.setAllowedOriginPatterns(List.of(frontendUrl, backendUrl));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization","Content-Type", "Accept"));
         configuration.setAllowCredentials(true);
